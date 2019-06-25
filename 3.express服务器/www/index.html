@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>hello world</h1>
+    
+
+    <script src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/js/lib/jquery-1.10.2_1c4228b8.js"></script>
+    <script>
+        
+    $.ajax({
+        url: 'http://127.0.0.1:8080/api/list',
+        method: 'POST',
+        data: {
+            username: 'zhangsan',
+            password: 123456
+        },
+        success(data){
+            console.log('请求成功');
+            console.log(data);
+        },
+        fail(error){
+            console.log('请求失败');
+            console.log(error);
+        }
+    })
+
+    
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+sysPath = require 'path'
+
+module.exports = class ParsedError
+  constructor: (@error) ->
+    do @_parse
+
+  _parse: ->
+    @_trace = []
+    @_kind = 'Error'
+    @_wrapper = ''
+
+    @_wrapper = String @error.wrapper if @error.wrapper?
+
+    unless typeof @error is 'object'
+      @_message = String @error
+    else
+      @_stack = @error.stack
+
+      if @error.kind?
+        @_kind = String @error.kind
+      else if typeof @_stack is 'string'
+        if m = @_stack.match /^([a-zA-Z0-9\_\$]+):\ /
+          @_kind = m[1]
+
+      if typeof @_stack is 'string'
+        @_parseStack()
+      else
+        @_message = @error.message? and String(@error.message) or ''
+
+    return
+
+  _parseStack: ->
+    messageLines = []
+    reachedTrace = no
+
+    for line in @_stack.split '\n'
+      continue if line.trim() is ''
+      if reachedTrace
+        @_trace.push @_parseTraceItem line
+      else
+        if line.match /^\s*at\s.+/
+          reachedTrace = yes
+          @_trace.push @_parseTraceItem line
+        else
+          messageLines.push line
+
+    message = messageLines.join '\n'
+    if message.substr(0, @_kind.length) is @_kind
+      message =
+        message
+        .substr(@_kind.length, message.length)
+        .replace(/^\:\s+/, '')
+
+    @_message = message
+
+    return
+
+  _parseTraceItem: (text) ->
+    text = text.trim()
+
+    re
