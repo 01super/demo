@@ -15,6 +15,6 @@
 + css -loader-用于加载css文件,并且转换成 commonjs对象  
 + style-loader-将样式通过<style>标签插入到head中  
 ### webpack开启监听模式,有两种方式  
-  +  启动 webpack命令时,带上-watch参数  
+  +  启动 webpack命令时,带上-watch参数(需要手动刷新浏览器)  
   +  在配置 webpack. config.js中设置 watch:true
   
