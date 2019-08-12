@@ -12,3 +12,9 @@
 + HtmiWebpackPlugin      创建html文件去承载输出的bundle  
 + UglifyjsWebpackPlugin    压缩JS  
 + ZipWebpackPlugin      将打包出的资源生成一个zip包  
++ css -loader-用于加载css文件,并且转换成 commonjs对象  
++ style-loader-将样式通过<style>标签插入到head中  
+### webpack开启监听模式,有两种方式  
+  +  启动 webpack命令时,带上-watch参数  
+  +  在配置 webpack. config.js中设置 watch:true
+  
