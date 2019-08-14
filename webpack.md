@@ -27,7 +27,8 @@
   #### 依赖项：  
   + typescript(tsc --init：生成ts的配置文件)  
   + webpack、webpack-cli、webpack-dev-server
-  + 
+  + ts-loader：解析ts文件为js文件
+  + html-webpack-plugin：自动生成html主页，并把输出文件自动嵌入该文件中
   
 
   
