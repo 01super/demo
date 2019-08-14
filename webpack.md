@@ -1,5 +1,5 @@
 ### 常见loader  
-+ babel-loader     转换ES6、ES7等JS新特性语法css-loader支持.css文件的加载和解析
++ babel-loader     转换ES6、ES7等JS新特性语法css-loader支持.css文件的加载和解析，配置文件是.babelrc
 + less-loader      将less文件转换成css
 + ts-loader        将TS转换成Js
 + file-loader      进行图片、字体等的打包
@@ -19,8 +19,15 @@
   +  在配置 webpack. config.js中设置 watch:true  
 ### 静态资源内联  
   + 小图片和字体资源内联（减少http请求）：url-loader  
-  + html和js：row-loader  
+  + html和js：raw-loader(0.5.1)  
   ++ <script>S{require("raw-loader!babel-loaderl. /meta.htmI")}</script>  
-  ++ <script>${(require('raw-loader!babel-loader!../node modules/lib-flexible')}</script>
+  ++ <script>${(require('raw-loader!babel-loader!../node modules/lib-flexible')}</script>  
+  + css内联：借助style-loader或html-inline-css-webpack-plugin（推荐）  
+### 创建ts支持的webpack
+  #### 依赖项：  
+  + typescript(tsc --init：生成ts的配置文件)  
+  + webpack、webpack-cli、webpack-dev-server
+  + 
+  
 
   
