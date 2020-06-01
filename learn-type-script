@@ -1,0 +1,748 @@
+class User {
+  fullName: string
+  firstName: string
+  lastName: string
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName
+    this.lastName = lastName
+  }
+}
+
+interface Person {
+  firstName: string
+  lastName: string
+}
+
+function greeter(person: Person): string {
+  return person.firstName + person.lastName
+}
+
+const person: User = new User('f', 'k')
+
+console.log(greeter(person))
+
+let isDone: boolean = true
+
+let decLiteral: number = 20
+let hexLiteral: number = 0x16
+let binaryLiteral: number = 0b10100
+
+// 数组
+let list: number[] = [1, 2, 3]
+let list1: Array<number> = [1, 2, 3] // 数组泛型
+
+//  元组
+let x: [string, number]
+x = ['string', 12] // 元组如果不可以越界   x[3] = 1  报错
+
+// 枚举类型
+enum Color {
+  Red, // 默认起始从零开始
+  Green = 3,
+  Blue
+}
+let color: Color = Color.Blue
+let green: string = Color[1]
+// console.log(color, green) // 2, Green
+// any 和 void 某种程度上可以理解为相反的
+function warnUser(): void {
+  const a: number = 12
+  console.log(a)
+}
+// tsc index.ts --strictNullChecks
+let n: number = 3
+n = null // tsc index.ts --strictNullChecks，严格模式
+// never 任何类型的子类型 必须是不能返回、结束、或者报错的。
+function error(message: string): never {
+  throw new Error(message)
+}
+
+// object 非原始数据类型
+// declare 表示声明一个东西 Object.create()
+declare function create(o: object | null): void
+// create({ props: 0 });
+// create(null);
+// create(undefined);
+// create('string')  // 原始类型会报错
+
+// 类型断言(强制转换)
+let somevalue: any = 'this is a string'
+// somevalue.length   // 编译器会找不到length属性，因为编译器不知道他是什么类型
+// 方法1：
+let stringLen: number = (<string>somevalue).length
+// 方法2：
+let stringlen: number = (somevalue as string).length //  在jsx中只能使用该种方法
+
+function ff() {
+  for (var i = 0; i < 10; i++) {
+    setTimeout(() => {
+      console.log(i) // 输出全部为10
+    }, 100 * i)
+  }
+  for (var i = 0; i < 10; i++) {
+    ;(function(i) {
+      setTimeout(() => {
+        console.log(i) // 依次输出0-9
+      }, 100 * i)
+    })(i)
+  }
+}
+
+// 指定编译版本： tsc index.ts --target es2015
+
+// 变量声明
+var xx // var 可以重复定义
+var xx
+let aa
+// let aa  //let 在同一作用域中是不能重复定义的
+;(function() {
+  const a = 1
+  const kity = {
+    name: 'kity',
+    age: a
+  }
+  kity.age = 12
+  // kity = a  // 不能重新赋值
+})()
+
+// 数组解构
+let input: [number, number] = [1, 2]
+function f([first, second]: [number, number]) {
+  console.log(first, second)
+}
+f(input)
+
+const [first, ...rest] = [1, 2, 3] // first = 1; rest = [2,3]
+const [, second, , fourth] = [1, 2, 3, 4] // second = 2; fourth = 4
+// 对象解构
+let o = {
+  a: 1,
+  b: 2,
+  c: '123'
+}
+const { a, ...passthrough } = o
+let total = passthrough.b + passthrough.c.length
+passthrough.c = '666' // 不会改变被解构对象
+console.log(o, passthrough) // { a: 1, b: 2, c: '123' } { b: 2, c: '666' }
+const { a: c, ...passthrough1 } = o // 解构并重命名
+
+function keepWholeObject(wholeObject: { a: string; b?: number }) {
+  let { a, b = 100 } = wholeObject // 解构赋默认值
+}
+// type C = { a: string; b?: number };
+function f1({ a, b = 0 } = { a: '' }): void {}
+f1()
+f1({ a: '212' })
+// f1({});  // 报错，必须包含a属性
+
+// 数组展开 ...
+;(function() {
+  let first = [1, 2]
+  let second = [3, 4]
+  let bothPlus = [0, ...first, ...second, 5]
+})()
+
+let defauts = {
+  foo: 'spicy',
+  price: '$100'
+}
+let search = { ...defauts, foo: 'haha' } // 有重复的，后面会覆盖前面的
+
+// 只读属性, 变量使用const，属性使用readonly
+interface Point {
+  readonly x: number
+  readonly y: number
+  [propsName: string]: any // 索引签名
+}
+
+let p: Point = {
+  x: 1,
+  y: 2
+}
+// p.x = 33
+;(function() {
+  let a: number[] = [1, 2, 3]
+  let ro: ReadonlyArray<number> = a
+  a = ro as number[]
+})()
+
+interface SquareConfig {
+  color?: string
+  width?: number
+}
+
+function createSquare(config: SquareConfig) {
+  console.log(config)
+}
+
+// let mySquare = createSquare({color: "red", widthh: 12})  // width写错会报错
+let colorAndWidth = { color: 'red', widthh: 12 }
+let mySquare = createSquare(colorAndWidth) // 绕过类型检查
+
+// 函数类型的接口
+interface SearchFunc {
+  (s: string, n: number): string
+}
+
+let mySearch: SearchFunc
+mySearch = function(s, n) {
+  return s + n
+}
+
+// 可索引的类型
+interface StringArray {
+  [index: number]: string // [index: number]定义索引类型
+}
+let myArray: StringArray
+myArray = ['1', '2']
+
+class Ani {
+  name: string
+}
+class Dog1 extends Ani {
+  color: string
+}
+// interface NotOk {
+//   [x: number]: Ani  // number索引返回的类型应该是string返回类型的子类型
+//   [x: string]: Dog1
+// }
+interface NotOk {
+  [x: number]: Dog1 // number索引返回的类型应该是string返回类型的子类型
+  [x: string]: Ani
+}
+
+interface NumDic {
+  [index: string]: number // 定义字符串索引签名返回number类型
+  length: number
+  // name: string   // 不是number类型，报错
+}
+
+interface ReadOnlyArr {
+  readonly [index: number]: string
+}
+let mArr: ReadOnlyArr = ['1', '23']
+// mArr[1] = '' // Index signature in type 'ReadOnlyArr' only permits reading.
+
+// 类实现接口
+interface ClockInterface {
+  currentTime: Date
+  setTime()
+}
+class Clock implements ClockInterface {
+  // 类实现接口
+  currentTime: Date
+  setTime() {}
+  setYear() {} // 接口只描述了类的公共部分，允许类有他的私有成员
+}
+// 类实现接口时，是对实例部分进行类型检查，构造器存在于类的静态部分，不会进行检查
+// 构造器签名
+interface ClockConstructor {
+  new (hour: number, minute: number)
+}
+
+// 和类相关的有构造器接口和实例接口
+interface ClockInterface1 {
+  // 实例类型接口
+  tick()
+}
+interface ClockConstruct {
+  // 实例类型接口
+  new (h: number, m: number): ClockInterface1
+}
+// 工厂函数
+function createClock(
+  ctor: ClockConstruct,
+  h: number,
+  m: number
+): ClockInterface1 {
+  return new ctor(h, m)
+}
+class AnalogClock implements ClockInterface1 {
+  constructor(h: string, m: string) {}
+  tick() {
+    console.log('tick tock')
+  }
+}
+
+// let digtal = createClock(AnalogClock, 12, 12)
+// ===============构造器接口和实例接口的使用===============
+;(function() {
+  interface ClockInterface {
+    tick()
+  }
+  interface ClockConstructor {
+    new (hour: number, minute: number): ClockInterface
+  }
+  function createClock(
+    ctor: ClockConstructor,
+    hour: number,
+    minute: number
+  ): ClockInterface {
+    return new ctor(hour, minute)
+  }
+  class DigitalClock implements ClockInterface {
+    constructor(hour: number, minute: number) {}
+    tick() {
+      console.log('beep beep')
+    }
+  }
+  createClock(DigitalClock, 12, 12)
+})()
+
+// 继承接口
+interface Shape {
+  color: string
+}
+interface Width {
+  width: number
+}
+interface Square extends Shape, Width {
+  sldeLength: number
+}
+let s = {} as Square
+s.color = 'red'
+s.sldeLength = 12
+s.width = 12
+
+// 混合类型
+interface Conter {
+  (start: number): string
+  interval: number
+  reset(): void
+}
+// ==============实现混合类型==============
+function getConter(): Conter {
+  let conter = function(start: number) {
+    return start + 'xxx'
+  } as Conter
+  conter.interval = 12
+  conter.reset = function() {}
+  return conter
+}
+let con = getConter()
+con(12)
+con.interval = 123
+con.reset()
+
+// ======================接口继承类======================
+class Control {
+  private state: any
+}
+interface SelectTableControl extends Control {
+  select()
+}
+class Button extends Control implements SelectTableControl {
+  select() {}
+}
+// class Img implements SelectTableControl{  // 不能实现接口， 因为他缺少state
+//   select(){}
+// }
+
+// ======================类======================
+;(function() {
+  class Greeter {
+    greeting: string
+    constructor(message: string) {
+      this.greeting = message
+    }
+    get() {
+      return this.greeting + 'haha'
+    }
+  }
+  class Animal {
+    name: string
+    constructor(name: string) {
+      this.name = name
+    }
+    move(distance: number = 0) {
+      console.log(`${this.name}移动了${distance}米！`)
+    }
+  }
+  class Dog extends Animal {
+    constructor(name: string) {
+      super(name)
+    }
+    bark() {
+      console.log('wowowo')
+    }
+    move(num: number) {
+      super.move(num)
+    }
+  }
+  const d = new Dog('dog')
+  console.log(d.name)
+  d.bark()
+  d.move(200)
+})()
+
+// ==============类的公共，私有，受保护的修饰符==============
+;(function() {
+  class Animal {
+    private name: string // 外部不能访问
+    public constructor(name: string) {
+      this.name = name
+    }
+    public move(distance: number = 0) {
+      console.log(distance)
+    }
+  }
+  class Rhino extends Animal {
+    constructor() {
+      super('Rhino')
+    }
+  }
+  class Employee {
+    // 受保护成员，可以在子类中使用，但是不能在外部直接使用
+    protected age: number
+    private name: string
+    constructor(age: number, name: string) {
+      this.age = age
+      this.name = name
+    }
+    showAge() {
+      console.log(this.age, this.name)
+    }
+  }
+  const emp = new Employee(18, 'bob')
+  emp.showAge()
+  // emp.age // Property 'age' is protected and only accessible within class 'Employee' and its subclasses.
+  let animal = new Animal('animal')
+  let rhino = new Rhino()
+  let employee = new Employee(18, 'bob')
+  animal = rhino
+  // animal = employee  类型不兼容，私有成员来源不一样
+
+  class Person {
+    constructor(readonly name: string) {} // 参数属性，简化书写
+  }
+  let p1 = new Person('fk')
+  console.log(p1.name)
+})()
+// ======================存储器======================
+// 存储器 用getter， setter 来截取存取数据操作
+;(function() {
+  let passcode = '66668888'
+  class Employee {
+    private _fullName: string = '王八蛋'
+    get fullName(): string {
+      return this._fullName
+    }
+    set fullName(newName: string) {
+      if (passcode && passcode === '66668888') {
+        this._fullName = newName
+      } else {
+        console.log('wrong passcode')
+      }
+    }
+  }
+  const e = new Employee()
+  console.log(e.fullName)
+  e.fullName = '你'
+  console.log(e.fullName)
+})()
+// ======================抽象类======================
+// 抽象类，抽象方法 abstract，抽象类不能被实例化，其派生类可实例化
+;(function() {
+  abstract class Department {
+    name: string
+    constructor(name: string) {
+      this.name = name
+    }
+    printName(): void {
+      console.log(this.name)
+    }
+    abstract printMeeting(): void
+  }
+  class One extends Department {
+    constructor(name: string) {
+      super(name)
+    }
+    printMeeting() {
+      console.log('开会了！')
+    }
+  }
+  let one = new One('fff')
+  one.printMeeting()
+  // let department = new Department() // Cannot create an instance of an abstract class. 不能实现抽象类
+})()
+
+// 高级技巧
+;(function() {
+  class Greeter {
+    static GreeterName: string = 'this'
+  }
+  let maker: typeof Greeter
+  maker = Greeter
+  maker.GreeterName = 'that'
+  // 接口可以继承类
+})()
+
+// 函数
+let add: (x: number, y: number) => number = function(a, b) {
+  return a + b
+}
+function buildName(firstName: string, lastName = 'k'): string {
+  console.log('name', firstName + lastName)
+  return firstName + lastName
+}
+buildName('f')
+buildName('f', undefined) //  传undefined也会使用默认参数， 相当于没传，因为没传就是undefined
+buildName('f', null) // 不会使用默认参数
+buildName('f', 'k')
+
+// 箭头函数： 保存的是函数创建的时候的this值
+function ff1(this: void) {} // 明确告诉函数内部的this是不可用的
+
+interface Card {
+  suit: string
+  card: number
+}
+interface Deck {
+  suits: string[]
+  card: number[]
+  createCardPicker(this: Deck): () => Card
+}
+let deck: Deck = {
+  suits: ['hearts', 'spades', 'clubs', 'diamonds'],
+  card: Array(52), // 长度为52的空数组
+  // 显式的告诉该函数的this的指向
+  createCardPicker: function(this: Deck) {
+    // 使用箭头函数来防止改变this指向
+    return () => {
+      let pickCard = Math.floor(Math.random() * 52)
+      let pickSuit = Math.floor(pickCard / 13)
+      return {
+        suit: this.suits[pickSuit],
+        card: pickCard % 13
+      }
+    }
+  }
+}
+let cardPick = deck.createCardPicker()
+let pickCard = cardPick()
+console.log(pickCard.card, pickCard.suit)
+console.log(deck.card)
+
+// ======================函数重载======================
+function reload(obj: { a: string; b: string }): string // 把最精确的放在最前面
+function reload(obj: { a: number; b: number }): number
+function reload(obj) {
+  return obj.a + obj.b
+}
+reload({ a: 1, b: 2 })
+reload({ a: '1', b: '2' })
+
+// ======================泛型======================
+// 类型变量，一直特殊的变量，只用于表示类型，而不是值
+function identity<T>(arg: T) {
+  return arg
+}
+let output = identity<string>('ha')
+let output1 = identity('ha')
+function login<T>(arg: T[]): T[] {
+  console.log(arg.length)
+  return arg
+}
+// 泛型函数的类型
+let myIdentity: <T>(arg: T) => T = identity
+// 对象字面量
+let myIdentity1: { <T>(arg: T): T } = identity
+// 泛型接口：类似对象字面量
+interface GenericIdentityFn {
+  <T>(arg: T): T
+}
+// 把T作为接口的参数，好处：其他成员也可以使用这个类型
+interface GenericIdentityFn1<T> {
+  (arg: T): T
+}
+let myIdentity2: GenericIdentityFn = identity
+
+// ======================泛型类======================
+// 只实例部分，静态类型不可用
+class GenericNunber<T> {
+  zeroValue: T
+  add: (x: T, y: T) => T
+}
+let myGenricNumber = new GenericNunber<number>()
+myGenricNumber.zeroValue = 1
+myGenricNumber.add(1, 2)
+// ==========
+interface Length {
+  length: number
+}
+function haveLength<T extends Length>(arg: T): T {
+  console.log(arg.length)
+  return arg
+}
+haveLength([])
+haveLength({ length: 1 })
+// =======
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key]
+}
+let xc = { a: 1, b: 2 }
+getProperty(xc, 'a')
+// getProperty(xc, 'v')  // key不存在与该对象上，就会报错
+
+// 通过泛型创建构造函数
+function create1<T>(c: { new (): T }): T {
+  return new c()
+}
+// ===============
+class BeeKeeper {
+  hasMask: boolean
+}
+class LionKeeper {
+  nameTag: string
+}
+class Dongwu {
+  numLengs: number
+}
+class Bee extends Dongwu {
+  keeper: BeeKeeper
+}
+class Lion extends Dongwu {
+  keeper: LionKeeper
+}
+function cretaInstance<T extends Dongwu>(c: new () => T): T {
+  return new c()
+}
+cretaInstance(Lion).keeper.nameTag
+cretaInstance(Bee).keeper.hasMask
+
+// ============类型推断===========
+let xxx = [new Bee(), new Lion()] //xx: (Lion | Bee)[]
+let ccc: Dongwu[] = [new Bee(), new Lion()]
+
+// ============上下文类型============
+function createZoo(): Dongwu[] {
+  return [new Bee(), new Lion()]
+}
+
+// ============交叉类型============
+function extend<T, U>(first: T, second: U): T & U {
+  let result = {} as T & U
+  for (let id in first) {
+    result[id] = first[id] as any
+  }
+  for (let id in second) {
+    if (!result.hasOwnProperty(id)) {
+      result[id] = second[id] as any
+    }
+  }
+  return result
+}
+class P {
+  constructor(public name: string) {}
+}
+interface Loggable {
+  log(): void
+}
+class ConsoleLogger implements Loggable {
+  log() {}
+}
+var jim = extend(new P('jim'), new ConsoleLogger())
+jim.log()
+jim.name
+
+// ============联合类型============
+function pad(value: string, padding: string | number) {}
+
+interface Bird {
+  fly()
+  lay()
+}
+interface Cat {
+  swi()
+  lay()
+}
+function getSmallPet(): Bird | Cat {
+  let AA: Bird = {
+    fly() {}, 
+    lay() {}
+  }
+  return AA
+}
+let pet = getSmallPet()
+pet.lay()
+// pet.fly()  // 报错，只能推断出两个类型的共有类型
+
+// ==============类型保护机制=====================
+// 第一种 is
+function isBird(pet: Bird | Cat): pet is Bird {
+  return (pet as Bird).fly !== undefined
+}
+if (isBird(pet)) {
+  // 通过类型保护机制，就可以访问到他的属性
+  pet.fly()
+} else {
+  pet.swi()
+}
+// 第二种 typeof
+let axa: number | string = 'ssds'
+if (typeof axa === 'string') {
+  axa.length
+  axa.toLocaleLowerCase()
+}
+// 第三种instanceof
+class Snake {
+  bark: 12
+  gee: []
+}
+class Kk {
+  k: ''
+  fd: { a: 1 }
+}
+function getRandomPet(): Snake | Kk {
+  return Math.random() > 0.5 ? new Snake() : new Kk()
+}
+let pet1 = getRandomPet()
+if (pet1 instanceof Snake) {
+  pet1.bark
+} else {
+  pet1.fd
+}
+// 在严格模式下 stickNullCheck
+// null 不能赋值给number或者undefined
+function broken(name: string | null): string {
+  function postFix(epither: string) {
+    // return name.charAt(0) + '. the ' + epither //Object is possibly 'null'.
+    return name!.charAt(0) + '. the ' + epither // ! 感叹号，明确告诉编译器，其值不会为null
+  }
+  name = name || 'Bob'
+  return postFix(name)
+}
+
+//  ==========字符串字面量类型===========
+type Easing = 'ease-in' | 'ease-out' | 'ease-in-out'
+
+
+export type StringKeys<T> = {
+  [P in keyof T]: P extends string ? P : never
+}[keyof T]
+
+export type StringValue<T> = {
+  [P in keyof T]: T[P] extends string ? T[P] : never
+}[keyof T]
+
+export type DictArray<T> = {
+  [P in keyof T]: P extends string ? { text: T[P]; code: P } : never
+}[keyof T][]
+
+export function dictToArray<T>(obj: T) {
+  const data = Object.entries(obj).map(v => ({ code: v[0], text: v[1] }))
+  return data as DictArray<T>
+}
+
+export const hrTypeDict = {
+  C: '公司',
+  D: '部门',
+  O: '其他',
+  P: '处室',
+  G: '项目/组'
+} as const
+
+
+export type HrCode = StringKeys<typeof hrTypeDict>
+export type HrValue = StringValue<typeof hrTypeDict>
+export const hrTypeOptions = dictToArray(hrTypeDict)
